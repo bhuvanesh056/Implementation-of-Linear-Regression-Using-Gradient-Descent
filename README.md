@@ -1,121 +1,82 @@
 # Implementation-of-Linear-Regression-Using-Gradient-Descent
 
-# AIM:
+## AIM:
 To write a program to predict the profit of a city using the linear regression model with gradient descent.
 
-# Equipments Required:
+## Equipments Required:
 1. Hardware – PCs
 2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
-# Algorithm
-1. Load the startup dataset.
-2. Convert categorical data into numerical values.
-3. Split the data into training and testing sets.
-4. Initialize weights, bias, and learning rate.
-5. Train the model using Gradient Descent.
-6. Predict startup profits.
-7. Calculate MSE and plot the cost function.
-8. Display the results and stop.
+## Algorithm
+1.Import the required library and read the dataframe.
 
-# Program:
+2.Write a function computeCost to generate the cost function.
+
+3.Perform iterations og gradient steps with learning rate.
+
+4.Plot the Cost function using Gradient Descent and generate the required graph.
+
+## Program:
 ```
-
-import pandas as pd
+/*
+Program to implement the linear regression using gradient descent.
+Developed by: BHUVANESH P
+RegisterNumber:  212224060047
+*/
+```
+```
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
+import pandas as pd
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error
-```
-## Step 1: Load the dataset
-```
-from google.colab import files
-uploaded = files.upload()
 
-df = pd.read_csv("exp_3_50_Startups.csv")
+def linear_regression(X1,y,learning_rate = 0.1, num_iters = 1000):
 
-print("First 5 rows of the dataset:")
-print(df.head())
-```
-## Step 2: Convert categorical data into numerical data
-```
-df = pd.get_dummies(df, columns=["State"], drop_first=True, dtype=int)
-```
-## Step 3: Separate input and output variables
-```
-X = df.drop("Profit", axis=1).values
-Y = df["Profit"].values.reshape(-1, 1)
-```
-## Step 4: Split the dataset
-```
-X_train, X_test, Y_train, Y_test = train_test_split(
-    X, Y, test_size=0.2, random_state=42
-)
-```
-## Step 5: Scale the data
-```
-scaler_X = StandardScaler()
-scaler_Y = StandardScaler()
+# Add a column of ones to x for intercept term
+    X = np.c_[np.ones(len(X1)),X1]
 
-X_train = scaler_X.fit_transform(X_train)
-X_test = scaler_X.transform(X_test)
+# Initialise theta with zeroes
+    theta = np.zeros(X.shape[1]).reshape(-1,1)
 
-Y_train = scaler_Y.fit_transform(Y_train)
-Y_test_scaled = scaler_Y.transform(Y_test)
-```
-## Step 6: Initialize parameters
-```
-m, n = X_train.shape
-weights = np.zeros((n, 1))
-bias = 0.0
-learning_rate = 0.01
-epochs = 1000
-cost_history = []
-```
-## Step 7: Perform gradient descent
-```
-for i in range(epochs):
-    Y_pred = np.dot(X_train, weights) + bias
+# Perform gradient descent
+    for _ in range(num_iters):
+        predictions = (X).dot(theta).reshape(-1,1)
 
-    error = Y_pred - Y_train
-    dw = (2 / m) * np.dot(X_train.T, error)
-    db = (2 / m) * np.sum(error)
+# Calculate errors
+        errors=(predictions - y ).reshape(-1,1)
 
-    weights -= learning_rate * dw
-    bias -= learning_rate * db
+# Update theta usig gradient descent
+        theta -= learning_rate*(1/len(X1))*X.T.dot(errors)
+    return theta
+data=pd.read_csv("drive/MyDrive/ML/50_Startups.csv")
 
-    cost = np.mean(error ** 2)
-    cost_history.append(cost)
-```
-## Step 8: Predict startup profits
-```
-Y_pred_scaled = np.dot(X_test, weights) + bias
-Y_pred = scaler_Y.inverse_transform(Y_pred_scaled)
-```
-## Step 9: Calculate Mean Squared Error
-```
-mse = mean_squared_error(Y_test, Y_pred)
+# Assuming the last column is your target variable 'y' and the preceding columns are your features 'x'
+data.head()
+X=(data.iloc[1:,:-2].values)
+X1=X.astype(float)
+scaler=StandardScaler()
+y=(data.iloc[1:,-1].values).reshape(-1,1)
+X1_Scaled=scaler.fit_transform(X1)
+Y1_Scaled=scaler.fit_transform(y)
 
-print("\nActual Profits:\n", Y_test[:5].flatten())
-print("\nPredicted Profits:\n", Y_pred[:5].flatten())
-print("\nMean Squared Error:", round(mse, 2))
+# Learn Model Parameters
+
+theta= linear_regression(X1_Scaled,Y1_Scaled)
+
+# Predict data value for a new data point
+
+new_data=np.array([165349.2,136897.8,471784.1]).reshape(-1,1)
+new_Scaled=scaler.fit_transform(new_data)
+prediction=np.dot(np.append(1,new_Scaled),theta)
+prediction=prediction.reshape(-1,1)
+pre=scaler.inverse_transform(prediction)
+print(prediction)
+print(f"Predicted value: {pre}") 
 ```
-## Step 10: Plot the cost function
-```
-plt.figure(figsize=(8, 5))
-plt.plot(cost_history)
-plt.title("Gradient Descent Cost Function")
-plt.xlabel("Epochs")
-plt.ylabel("Mean Squared Error")
-plt.grid(True)
-plt.show()
+## Output:
 
-print("\nRESULT: Startup profit prediction using Gradient Descent was completed.")
+## PREDICTED VALUE
 
-```
+![image](https://github.com/user-attachments/assets/e9bde0ca-380c-469b-8e89-de4e1944124d)
 
-# Output:
-<img width="987" height="795" alt="image" src="https://github.com/user-attachments/assets/dc3a33cd-2719-476a-b1e4-a2a7d9ec44d1" />
-
-# Result:
+## Result:
 Thus the program to implement the linear regression using gradient descent is written and verified using python programming.
